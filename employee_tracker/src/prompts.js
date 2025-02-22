@@ -116,3 +116,60 @@ const addRole = async () => {
         console.error('Error adding role', error);
     }
 };
+
+const addEmployee = async () => {
+    const roleRes = await db.query('SELECT id, title FROM role');
+    const roles = roleRes.rows.map(role => ({
+        name: role.title,
+        value: role.id
+    }));
+
+    const employeeRes = await db.query('SELECT id, first_name, last_name FROM employee');
+    const managers = employeeRes.rows.map(employee => ({
+        name: `${employee.first_name} ${employee.last_name}`,
+        value: employee.id
+    }));
+
+    managers.unshift({name: 'None', value: null});
+
+    const answers = await inquirer.prompt([
+        {
+            type: 'input',
+            name: 'first_name',
+            message: 'Enter the first name of the employee:'
+        },
+        {
+            type: 'input',
+            name: 'last_name',
+            message: 'Enter the last name of the employee:'
+        },
+        {
+            type: 'list',
+            name: 'role_id',
+            message: 'Select the role of the employee:',
+            choices: roles
+        },
+        {
+            type: 'list',
+            name: 'manager_id',
+            message: 'Select the manager of the employee:',
+            choices: managers
+        }
+    ]);
+
+    try {
+        await db.query(
+            'INSERT INTO employee (
+                first_name,
+                last_name,
+                role_id,
+                manager_id
+            ) VALUES ($1, $2, $3, $4)',
+            [answers.first_name, answers.last_name, answers.role_id, answers.manager_id]
+        );
+        console.log(`Employee "${answers.first_name} ${answers.last_name}" added successfully`);
+    } catch (error) {
+        console.error('Error adding employee', error);
+    };
+
+    const updateEmployeeRole = async () => {
