@@ -80,3 +80,39 @@ const addDepartment = async () => {
         console.error('Error adding department', error);
     }
 };
+
+const addRole = async () => {
+    const deptRes = await db.query('SELECT id, name FROM department');
+    const departments = deptRes.rows.map(dept => ({
+        name: dept.name, 
+        value: dept.id
+    }));
+
+    const answers = await inquirer.prompt([{
+            type: 'input',
+            name: 'title',
+            message: 'Enter the title of the role:'
+        },
+        {
+            type: 'input',
+            name: 'salary',
+            message: 'Enter the salary of the role:'
+        },
+        {
+            type: 'list',
+            name: 'department_id',
+            message: 'Select the department of the role:',
+            choices: departments
+        }
+    ]);
+
+    try {
+        await db.query(
+            'INSERT INTO role (title, salary, department_id) VALUES ($1, $2, $3)',
+            [answers.title, answers.salary, answers.department_id]
+        );
+        console.log(`Role "${answers.title}" added successfully`);
+    } catch (error) {
+        console.error('Error adding role', error);
+    }
+};
