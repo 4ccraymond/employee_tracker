@@ -1,4 +1,4 @@
-const {pool} = require('pg');
+import { Pool } from 'pg';
 
 const pool = new Pool({
     user: 'postgres',
@@ -13,4 +13,4 @@ const query = async (text, params) => {
     return res;
 };
 
-module.exports = {query, pool};
+export default {query};

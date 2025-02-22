@@ -1,5 +1,5 @@
-const inquirer = require('inquirer');
-const db = require('./db');
+import inquirer from 'inquirer';
+import db from './db.js';
 
 const mainMenu = async () => {
     const {choice} = await inquirer.prompt({
@@ -207,4 +207,4 @@ const updateEmployeeRole = async () => {
     }
 };
 
-module.exports = {mainMenu};
+export default {mainMenu};

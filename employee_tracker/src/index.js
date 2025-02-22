@@ -1,4 +1,4 @@
-const {mainMenu} = require('./prompts');
+import {mainMenu} from './prompts.js';
 
 const init = async () => {
     try {
