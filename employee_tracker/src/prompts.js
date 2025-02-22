@@ -159,17 +159,52 @@ const addEmployee = async () => {
 
     try {
         await db.query(
-            'INSERT INTO employee (
-                first_name,
-                last_name,
-                role_id,
-                manager_id
-            ) VALUES ($1, $2, $3, $4)',
+            'INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ($1, $2, $3, $4),'
             [answers.first_name, answers.last_name, answers.role_id, answers.manager_id]
         );
         console.log(`Employee "${answers.first_name} ${answers.last_name}" added successfully`);
     } catch (error) {
         console.error('Error adding employee', error);
-    };
+    }
+};
 
-    const updateEmployeeRole = async () => {
+const updateEmployeeRole = async () => {
+    const employeeRes = await db.query('SELECT id, first_name, last_name FROM employee');
+    const employees = employeeRes.rows.map(employee => ({
+        name: `${employee.first_name} ${employee.last_name}`,
+        value: employee.id
+    }));
+
+    const roleRes = await db.query('SELECT id, title FROM role');
+    const roles = roleRes.rows.map(role => ({
+        name: role.title,
+        value: role.id
+    }));
+
+    const answers = await inquirer.prompt([
+        {
+            type: 'list',
+            name: 'employee_id',
+            message: 'Select the employee to update:',
+            choices: employees
+        },
+        {
+            type: 'list',
+            name: 'role_id',
+            message: 'Select the new role of the employee:',
+            choices: roles
+        },
+    ]);
+
+    try {
+        await db.query(
+            'UPDATE employee SET role_id = $1 WHERE id = $2',
+            [answers.role_id, answers.employee_id]
+        );
+        console.log(`Employee updated successfully`);
+    } catch (error) {
+        console.error('Error updating employee', error);
+    }
+};
+
+module.exports = {mainMenu};
