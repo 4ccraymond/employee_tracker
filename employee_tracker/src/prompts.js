@@ -2,21 +2,24 @@ import inquirer from 'inquirer';
 import db from './db.js';
 
 const mainMenu = async () => {
-    const {choice} = await inquirer.prompt({
-        type: 'list',
-        name: 'choice',
-        message: 'What would you like to do?',
-        choices: [
-            'View all departments',
-            'View all roles',
-            'View all employees',
-            'Add a department',
-            'Add a role',
-            'Add an employee',
-            'Update an employee role',
-            'Quit'
-        ]
-    });
+    let exit = false;
+    while (!exit) {
+        const {choice} = await inquirer.prompt({
+            type: 'list',
+            name: 'choice',
+            message: 'What would you like to do?',
+            choices: [
+                'View all departments',
+                'View all roles',
+                'View all employees',
+                'Add a department',
+                'Add a role',
+                'Add an employee',
+                'Update an employee role',
+                'Quit'
+            ]
+        });
+    };
 
     switch (choice) {
         case 'View all departments':
@@ -34,7 +37,8 @@ const mainMenu = async () => {
         case 'Update an employee role':
             return updateEmployeeRole();
         case 'Quit':
-            return;
+            exit = true;
+            break;
     }
 };
 
@@ -159,7 +163,7 @@ const addEmployee = async () => {
 
     try {
         await db.query(
-            'INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ($1, $2, $3, $4),'
+            'INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ($1, $2, $3, $4)',
             [answers.first_name, answers.last_name, answers.role_id, answers.manager_id]
         );
         console.log(`Employee "${answers.first_name} ${answers.last_name}" added successfully`);
@@ -207,4 +211,4 @@ const updateEmployeeRole = async () => {
     }
 };
 
-export default {mainMenu};
+export {mainMenu};

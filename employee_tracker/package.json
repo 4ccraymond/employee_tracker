@@ -2,6 +2,7 @@
   "name": "employee_tracker",
   "version": "1.0.0",
   "main": "src/index.js",
+  "type": "module",
   "scripts": {
     "build": "tsc",
     "start": "node src/index.js",
@@ -12,7 +13,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "inquirer": "^12.4.2",
+    "inquirer": "8.2.4",
     "pg": "^8.13.3"
   }
 }
