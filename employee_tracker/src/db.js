@@ -10,8 +10,14 @@ const pool = new Pool({
 });
 
 const query = async (text, params) => {
-    const res = await pool.query(text, params);
-    return res;
+    try {
+        const res = await pool.query(text, params);
+        return res;
+    }
+    catch (error) {
+        console.error('Query error', error);
+        throw error;
+    }
 };
 
 export default {query};
